@@ -3,6 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Nathanmac\Utilities\Parser\Facades\Parser;
+// use Laravie\Parser\Xml\Reader;
+// use Laravie\Parser\Xml\Document;
+use Orchestra\Parser\Xml\Facade as XmlParser;
 
 class HomeController extends Controller
 {
@@ -24,5 +29,75 @@ class HomeController extends Controller
     public function index()
     {
         return view('home');
+    }
+
+    public function showPlaylistView(){
+        return view('upload_playlist');
+    }
+
+    public function uploadPlaylist(Request $request){
+
+        if(!request()->has('file') || !request()->file('file')->isValid('file')){
+            return back()->with('error','Please Select an file to upload');
+        }else{
+            $extensions = array("xml");
+            
+            $result = array(request()->file('file')->getClientOriginalExtension());
+            
+            if(in_array($result[0],$extensions)){
+                // Save the file to a path
+                // upon saving the file parse the file content
+                // upload to a database
+
+
+                $path = $request->file('file')->storeAs(
+                    'playlist', 'playlist.xml'
+                );
+                // $this->parseXML($path);
+                
+                // once done delete the file from the database
+                // Storage::delete('playlist.xml');
+                return redirect()->back()->with('success','Playlist Uploaded. Processing Playlist...');
+                // Excel::import(new BaseDataImport,request()->file('file'));    
+                // return back()->with('success','Data Imported Successfully');
+                // Do something when Succeeded 
+
+            }else{
+                // Do something when it fails
+                return back()->with('error','Only XML files can be uploaded');
+            }
+        }
+    }
+
+    public function parseXML($xml='playlist/playlist.xml'){
+        
+        $xml=Storage::get($xml);
+        Parser::payload();
+        Parser::xml($xml);
+        $val=Parser::all();
+        dd($val);
+        $xml = $xml = XmlParser::load($xml);
+        dd($xml);
+        // $user = $xml->parse([
+        //     'fileName' => ['uses' => 'Song::FilePath'],
+        //     'added' => ['uses' => 'Song.Infos::FirstSeen'],
+        //     'lastPlayed' => ['uses' => 'Song.Infos::LastPlay'],
+        //     'playCount' => ['uses' => 'Song.Infos::PlayCount'],
+        //     'firstPlayed' => ['uses' => 'Song.Infos::FirstPlay'],
+        // ]);
+
+        // $data=\Parser::xml($xml);
+        dd($user);
+        $xml = (new Reader(new Document()))->load($xml);
+        dd($xml);
+        $data = $xml->parse([
+            'fileName' => ['uses' => 'Song::FilePath'],
+            'added' => ['uses' => 'Song.Infos::FirstSeen'],
+            'lastPlayed' => ['uses' => 'Song.Infos::LastPlay'],
+            'playCount' => ['uses' => 'Song.Infos::PlayCount'],
+            'firstPlayed' => ['uses' => 'Song.Infos::FirstPlay'],
+        ]);
+        return $data;
+
     }
 }

@@ -18,3 +18,7 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/upload-playlist','HomeController@showPlaylistView')->name('upload-playlist');
+Route::get('/xml','HomeController@parseXML');
+
+Route::post('/upload-playlist','HomeController@uploadPlaylist')->name('upload-playlist');

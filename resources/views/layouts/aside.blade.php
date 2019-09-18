@@ -29,10 +29,10 @@
         @if(auth()->user()->type == 'admin')
         <li><a href="{{url('/admin/users')}}"><i class="fa fa-home"></i> <span>Home</span></a></li>
         {{-- <li class="{{$_SERVER['PATH_INFO'] == '/admin/users' ? 'active' : '' }}"><a href="{{route('all_users')}}"><i class="fa fa-users"></i> <span>Users Management</span></a></li> --}}
-        <li><a href="{{route('add_base_data')}}"><i class="fa fa-pencil"></i> <span>Manually Add Data</span></a></li>
-        <li><a href="/import-data"><i class="fa fa-download"></i> <span>Import Data</span></a></li>
+        {{-- <li><a href="{{route('add_base_data')}}"><i class="fa fa-pencil"></i> <span>Manually Add Data</span></a></li> --}}
+        {{-- <li><a href="/import-data"><i class="fa fa-download"></i> <span>Import Data</span></a></li> --}}
         @endif
-        <li><a href="/"><i class="fa fa-eye"></i> <span> View Saved Information</span></a></li>
+        <li><a href="{{route('upload-playlist')}}"><i class="fa fa-upload"></i> <span> Upload Playlist</span></a></li>
         <li>
             <a href="#" 
             href="{{ route('logout') }}"
