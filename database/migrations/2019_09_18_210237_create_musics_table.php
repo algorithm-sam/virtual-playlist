@@ -19,8 +19,6 @@ class CreateMusicsTable extends Migration
             $table->string('artist');
             $table->string('language');
             $table->timestamp('first_seen')->nullable();
-            $table->timestamp('first_play')->nullable();
-            $table->timestamp('last_play')->nullable();
             $table->integer('play_count')->default('0');
             $table->timestamps();
         });

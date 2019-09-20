@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ParsePlaylist;
 use App\Models\Music;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -58,6 +59,9 @@ class HomeController extends Controller
                 $path = $request->file('file')->storeAs(
                     'playlist', 'playlist.xml'
                 );
+                // run the job right here;
+                $parsePlaylist = new ParsePlaylist;
+                $this->dispatch($parsePlaylist);
                 // $this->parseXML($path);
                 
                 // once done delete the file from the database
@@ -74,38 +78,8 @@ class HomeController extends Controller
         }
     }
 
-    public function parseXML($xml='playlist/playlist.xml'){
-        DB::table('musics')->truncate();
-        $xml=Storage::get($xml);
-        $xml=simplexml_load_string($xml) or die("Error: Cannot create object");
-        foreach($xml->children() as $song) {
-            $fileInfo = pathinfo($song['FilePath']);
-            $file_name_array = explode('-',$fileInfo['filename']);
-            $name = array_splice($file_name_array,count($file_name_array)-1)[0];
-            $author=implode(' ',$file_name_array);
-            $language = $fileInfo['dirname'];
-            $firstSeen =  $song->Infos['FirstSeen'] ? Carbon::createFromTimestamp($song->Infos['FirstSeen']) : null;
-            $firstPlay =  $song->Infos['FirstPlay'] ? Carbon::createFromTimestamp($song->Infos['FirstPlay']) : null;
-            $lastPlay =  $song->Infos['LastPlay'] ? Carbon::createFromTimestamp($song->Infos['LastPlay']) : null;
-            $playCount =  $song->Infos['PlayCount'] ? $song->Infos['PlayCount'] : 0;
-            $language  = explode('\\',$language);
-            $language = count($language) > 2 ? $language[2]  : 'N/A';
-            
-            // Save to the database;
-            Music::create([
-                'name' =>$name,
-                'artist' => $author,
-                'play_count' => $playCount,
-                'language' => $language,
-                'first_seen' => $firstSeen,
-                'first_play' => $firstPlay,
-                'last_play' => $lastPlay
-            ]);
-            
-            // echo $language."* ".$firstSeen."* ".$firstPlay. "* ".$lastPlay."* ".$playCount. 'Name: '.$name.'Author : '.$author. "<br />";
-            
-        }
-        echo 'All done';
+    public function parseXML(){
+        
         // Parser::payload();
         // Parser::xml($xml);
         // $val=Parser::all();

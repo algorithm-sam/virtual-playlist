@@ -30,7 +30,7 @@
                     
                     <div class="box">
                         <div class="box-header">
-                        <h3 class="box-title">Available User</h3>
+                        <h3 class="box-title">Available Music</h3>
                         </div>
                         <!-- /.box-header -->
                         <div class="box-body">
@@ -42,9 +42,7 @@
                             <th>Artist Name</th>
                             <th>Language</th>
                             <th>Play Count</th>
-                            <th>First Play</th>
-                            <th>Date Last Payed</th>
-                            <th>Date Added</th>
+                            <th>First Seen</th>
                             
                             </tr>
                             </thead>
@@ -56,8 +54,6 @@
                                     <td>{{$music->artist}}</td>
                                     <td>{{$music->language}}</td>
                                     <td>{{$music->play_count}}</td>
-                                    <td>{{$music->first_play}}</td>
-                                    <td>{{$music->last_play}}</td>
                                     <td>{{$music->first_seen}}</td>
                                 </tr>
                             @endforeach

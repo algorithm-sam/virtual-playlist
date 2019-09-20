@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Jobs\ParsePlaylist;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -26,6 +27,9 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
+        $schedule->job(new ParsePlaylist,'Parses the xml file and extract the needed value')
+                 ->everyFiveMinutes()
+                 ->withoutOverlapping();
     }
 
     /**
